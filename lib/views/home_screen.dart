@@ -59,11 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Apply Filters and Refresh Tasks
   Future<void> applyFiltersAndRefresh(WidgetRef ref) async {
     await Future.delayed(Duration(milliseconds: 300));
-    ref.read(taskProvider.notifier).applyFiltersAndSearch(
-          ref.read(searchQueryProvider),
-          ref.read(filterProvider),
-          date: selectedDate,
-        );
+
+    final query = ref.read(searchQueryProvider); // Read the actual search query value
+    final filter = ref.read(filterProvider); // Read the selected filter
+
+    ref.read(taskProvider.notifier).applyFiltersAndSearch(query, filter, date: selectedDate);
   }
 
   @override
@@ -146,6 +146,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          TextField(
+                            decoration: InputDecoration(
+                              hintText: "Search tasks...",
+                              prefixIcon: Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            onChanged: (query) {
+                              ref.read(searchQueryProvider.notifier).state = query; // Update search query
+
+                              ref.read(taskProvider.notifier).applyFiltersAndSearch(
+                                    query, // Pass the search query
+                                    ref.read(filterProvider), // Pass the current filter
+                                  );
+                            },
+                          ),
+
+                          Gap(20),
                           Text(
                             'You have ${stats["pending"]} tasks to complete',
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

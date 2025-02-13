@@ -57,8 +57,9 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<Task>>> {
     }
 
     if (query.isNotEmpty) {
-      filteredTasks =
-          filteredTasks.where((task) => task.title.toLowerCase().contains(query.toLowerCase())).toList();
+      filteredTasks = filteredTasks
+          .where((task) => task.title.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
 
     switch (filter) {
@@ -78,12 +79,13 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<Task>>> {
         filteredTasks = filteredTasks.where((task) => task.priority == 'Important').toList();
         break;
       case TaskFilter.all:
-        // No filtering needed, keep all tasks
+      // No filtering needed, keep all tasks
         break;
     }
 
     state = AsyncValue.data(filteredTasks);
   }
+
 
   Future<void> addTask(Task task) async {
     final id = await _db.insertTask(task);
