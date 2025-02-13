@@ -1,0 +1,1 @@
+enum TaskFilter { all, completed, pending, basic, urgent, important }
